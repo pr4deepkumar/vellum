@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv
+.pytest_cache/
+logs/
+results/_mock*/
+.venv.nosync/
+WRITEUP.md
+.DS_Store
+*.egg-info/
+results/*.tar.gz
