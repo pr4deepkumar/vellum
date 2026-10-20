@@ -117,11 +117,11 @@ Measured on a single **16 GB NVIDIA Tesla T4** with vLLM 0.31.0, PyTorch 2.13, a
 
 | Metric | Captured Dimension | Measurement Formula / Source |
 |---|---|---|
-| **TTFT** | Time-to-First-Token | $t_{\text{first\_token}} - t_{\text{request\_sent}}$ |
-| **TPOT** | Time-Per-Output-Token | $(t_{\text{request\_end}} - t_{\text{first\_token}}) / (N_{\text{output\_tokens}} - 1)$ |
+| **TTFT** | Time-to-First-Token | $t_{\text{first token}} - t_{\text{request sent}}$ |
+| **TPOT** | Time-Per-Output-Token | $(t_{\text{request end}} - t_{\text{first token}}) / (N_{\text{output tokens}} - 1)$ |
 | **ITL** | Inter-Token Latency (Jitter) | $t_{i} - t_{i-1}$ across all streamed output chunks |
-| **Throughput**| Output Generation Rate | $\sum N_{\text{output\_tokens}} / t_{\text{wall\_clock\_seconds}}$ |
-| **$ / 1M Tokens** | Cost Floor per 1M Tokens | $(\text{GPU \$/hr} / (\text{Throughput} \times 3600)) \times 10^6$ |
+| **Throughput**| Output Generation Rate | $\sum N_{\text{output tokens}} / t_{\text{wall clock seconds}}$ |
+| **\$ / 1M Tokens** | Cost Floor per 1M Tokens | $(\text{GPU Cost/hr} / (\text{Throughput} \times 3600)) \times 10^6$ |
 | **KV Cache %** | Memory Fragmentation & Fill | Polled from vLLM Prometheus `vllm:gpu_cache_usage_factor` |
 
 ---
