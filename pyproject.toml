@@ -1,7 +1,9 @@
 [project]
 name = "vellum"
-version = "0.1.0"
-description = "Throughput/latency benchmarking of vLLM serving across concurrency levels and quantization schemes"
+version = "0.2.0"
+description = "LLM inference benchmarking, plus a from-scratch Mistral 7B engine optimized one measured step at a time"
+readme = "README.md"
+license = "MIT"
 requires-python = ">=3.10"
 dependencies = [
     "aiohttp>=3.9",
@@ -10,6 +12,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+# The from-scratch Mistral 7B (vellum.mistral). CPU torch is enough for its tests; pyarrow reads
+# the WikiText-2 parquet files AWQ calibrates and is evaluated on.
+mistral = ["torch>=2.5", "safetensors>=0.4", "huggingface_hub>=0.20", "mistral_common[sentencepiece]>=1.0", "pyarrow>=14"]
 # Only installable on a Linux + NVIDIA GPU box.
 gpu = ["vllm"]
 dev = ["pytest>=8", "pytest-asyncio>=0.23"]
@@ -26,3 +31,5 @@ packages = ["vellum"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]

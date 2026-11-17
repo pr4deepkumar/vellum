@@ -9,3 +9,8 @@ WRITEUP.md
 .DS_Store
 *.egg-info/
 results/*.tar.gz
+.ipynb_checkpoints/
+# Model weights are downloaded at run time and never committed.
+weights/
+*.safetensors
+*.pth

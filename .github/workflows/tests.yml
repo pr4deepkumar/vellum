@@ -1,0 +1,23 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      # CPU-only torch: the from-scratch Mistral's tests need torch, not a GPU.
+      - run: pip install torch --index-url https://download.pytorch.org/whl/cpu
+      # Triton without a GPU: its interpreter runs the W4A16 kernels' test on CPU
+      - run: pip install triton==3.7.1
+      - run: pip install -e ".[mistral,dev]"
+      - run: pytest

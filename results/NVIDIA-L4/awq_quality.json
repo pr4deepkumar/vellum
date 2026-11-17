@@ -1,0 +1,18 @@
+{
+  "model": "mistralai/Mistral-7B-Instruct-v0.3",
+  "dataset": "wikitext-2-raw-v1 test",
+  "window": 2048,
+  "test_tokens": 334660,
+  "perplexity": {
+    "bf16": 5.49039628014335,
+    "awq": 5.6114326712674085,
+    "rtn": 5.696102850421296
+  },
+  "method": "awq",
+  "bits": 4,
+  "group_size": 128,
+  "source": "mistralai/Mistral-7B-Instruct-v0.3",
+  "calibration": "wikitext-2 train, 32 x 512 tokens",
+  "grid": 20,
+  "seconds": 166.3
+}

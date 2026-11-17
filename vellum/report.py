@@ -20,9 +20,17 @@ def cost_per_million(tok_per_s: float | None, gpu_cost_per_hour: float | None) -
     return gpu_cost_per_hour / (tok_per_s * 3600) * 1e6
 
 
+def _has_memory(levels) -> bool:
+    return any(lv.get("peak_mem_gib") is not None for lv in levels)
+
+
 def _level_table(run: dict, cost: float | None) -> list[str]:
     head = "| load | out tok/s | req/s | TTFT p50 | TTFT p99 | TPOT p50 | TPOT p99 | E2E p99 | peak KV | fails |"
     sep = "|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|"
+    memory = _has_memory(run["levels"])
+    if memory:
+        head += " peak mem |"
+        sep += "---:|"
     if cost is not None:
         head += " $/1M out |"
         sep += "---:|"
@@ -34,6 +42,8 @@ def _level_table(run: dict, cost: float | None) -> list[str]:
             f"| {_n(lv['p50_tpot_ms'])} | {_n(lv['p99_tpot_ms'])} | {_n(lv['p99_e2e_ms'], '{:.0f}')} "
             f"| {_n(lv.get('max_kv_cache_usage'), '{:.0%}')} | {lv['num_failed']} |"
         )
+        if memory:
+            row += f" {_n(lv.get('peak_mem_gib'), '{:.1f} GiB')} |"
         if cost is not None:
             row += f" {_n(cost_per_million(lv['output_token_throughput'], cost), '${:.3f}')} |"
         rows.append(row)
@@ -57,6 +67,10 @@ def _comparison(runs: dict[str, dict], mode: str, cost: float | None) -> list[st
     base = pick[base_label]["output_token_throughput"]
     out = [f"### Head-to-head at {_LOAD_FMT[mode].format(level)} (relative to {base_label})", ""]
     head, sep = "| config | out tok/s | speed-up | TTFT p50 | TPOT p50 |", "|---|---:|---:|---:|---:|"
+    memory = _has_memory(pick.values())
+    if memory:
+        head += " peak mem |"
+        sep += "---:|"
     if cost is not None:
         head += " $/1M out |"
         sep += "---:|"
@@ -64,6 +78,8 @@ def _comparison(runs: dict[str, dict], mode: str, cost: float | None) -> list[st
     for lab, lv in pick.items():
         row = (f"| {lab} | {lv['output_token_throughput']:.0f} | {lv['output_token_throughput'] / base:.2f}× "
                f"| {_n(lv['p50_ttft_ms'])} ms | {_n(lv['p50_tpot_ms'])} ms |")
+        if memory:
+            row += f" {_n(lv.get('peak_mem_gib'), '{:.1f} GiB')} |"
         if cost is not None:
             row += f" {_n(cost_per_million(lv['output_token_throughput'], cost), '${:.3f}')} |"
         out.append(row)

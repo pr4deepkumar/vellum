@@ -1,0 +1,3 @@
+# GPU memory right after loading weights/awq, one fresh process per mode (scratchpad memcheck)
+hybrid: allocated after load 7.44 GiB, peak during load and tuning 7.44 GiB, layers holding the second copy: 224
+single-copy: allocated after load 4.17 GiB, peak during load and tuning 4.92 GiB, layers holding the second copy: 0

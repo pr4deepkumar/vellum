@@ -1,7 +1,9 @@
 """Command-line entry points.
 
     vellum sweep   --label fp16 --concurrency 1 2 4 8 16 32 64
-    vellum offline --backend hf --model Qwen/Qwen2.5-3B-Instruct --label hf-fp16
+    vellum offline --backend hf --model mistralai/Mistral-7B-Instruct-v0.3 --label hf-fp16
+    vellum offline --backend scratch --model mistralai/Mistral-7B-Instruct-v0.3 --rung gqa --label scratch-gqa
+    vellum quantize --model mistralai/Mistral-7B-Instruct-v0.3 --out weights/awq --quality awq_quality.json
     vellum plot    results/
     vellum report  results/
 """
@@ -112,6 +114,8 @@ def main(argv: list[str] | None = None) -> None:
 
     from .offline import add_parser as add_offline_parser
     add_offline_parser(sub)
+    from .quantize import add_parser as add_quantize_parser
+    add_quantize_parser(sub)
 
     pl = sub.add_parser("plot", help="render charts from sweep JSON files")
     pl.add_argument("results_dir")
@@ -128,6 +132,9 @@ def main(argv: list[str] | None = None) -> None:
     elif args.cmd == "offline":
         from .offline import main as offline_main
         offline_main(args)
+    elif args.cmd == "quantize":
+        from .quantize import main as quantize_main
+        quantize_main(args)
     elif args.cmd == "plot":
         from .plot import plot_dir
         for path in plot_dir(Path(args.results_dir)):
